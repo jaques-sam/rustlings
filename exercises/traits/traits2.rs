@@ -10,13 +10,21 @@
 // No boiler plate code this time,
 // you can do this!
 
-// I AM NOT DONE
-
 trait AppendBar {
     fn append_bar(self) -> Self;
 }
 
-//TODO: Add your code here
+impl AppendBar for Vec<String> {
+    // see here why the `mut` keyword is allowed here
+    // https://stackoverflow.com/questions/66700509/why-is-mut-self-in-trait-implementation-allowed-when-trait-definition-only-uses
+    // "The caller does not need to know about it:
+    //  you move the value one way or the other,
+    //  so it's up to the callee if it needs to mutate it or not.""
+    fn append_bar(mut self) -> Self {
+        self.push("Bar".into());
+        self
+    }
+}
 
 #[cfg(test)]
 mod tests {
