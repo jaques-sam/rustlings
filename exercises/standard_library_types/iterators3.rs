@@ -8,14 +8,8 @@
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum DivisionError {
-    NotDivisible(NotDivisibleError),
+    NotDivisible { dividend: i32, divisor: i32 },
     DivideByZero,
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub struct NotDivisibleError {
-    dividend: i32,
-    divisor: i32,
 }
 
 // Calculate `a` divided by `b` if `a` is evenly divisible by `b`.
@@ -26,10 +20,10 @@ pub fn divide(a: i32, b: i32) -> Result<i32, DivisionError> {
     }
 
     match a % b {
-        x if x > 0 => Err(DivisionError::NotDivisible(NotDivisibleError {
+        x if x > 0 => Err(DivisionError::NotDivisible{
             dividend: a,
             divisor: b,
-        })),
+        }),
         x => Ok(a / b),
     }
 }
@@ -59,10 +53,10 @@ mod tests {
     fn test_not_divisible() {
         assert_eq!(
             divide(81, 6),
-            Err(DivisionError::NotDivisible(NotDivisibleError {
+            Err(DivisionError::NotDivisible {
                 dividend: 81,
                 divisor: 6
-            }))
+            })
         );
     }
 
@@ -79,7 +73,10 @@ mod tests {
     #[test]
     fn test_result_with_list() {
         let numbers = vec![27, 297, 38502, 81];
-        assert_eq!(format!("{:?}", result_with_list(&numbers)), "Ok([1, 11, 1426, 3])");
+        assert_eq!(
+            format!("{:?}", result_with_list(&numbers)),
+            "Ok([1, 11, 1426, 3])"
+        );
     }
 
     #[test]
@@ -97,7 +94,7 @@ mod tests {
         let numbers = vec![27, 297, 666, 81];
         assert_eq!(
             format!("{:?}", list_of_results(&numbers)),
-            "[Ok(1), Ok(11), Err(NotDivisible(NotDivisibleError { dividend: 666, divisor: 27 })), Ok(3)]"
+            "[Ok(1), Ok(11), Err(NotDivisible { dividend: 666, divisor: 27 }), Ok(3)]"
         );
     }
 
@@ -106,7 +103,7 @@ mod tests {
         let numbers = vec![9, 297, 38502, 81];
         assert_eq!(
             format!("{:?}", list_of_results(&numbers)),
-            "[Err(NotDivisible(NotDivisibleError { dividend: 9, divisor: 27 })), Ok(11), Ok(1426), Ok(3)]"
+            "[Err(NotDivisible { dividend: 9, divisor: 27 }), Ok(11), Ok(1426), Ok(3)]"
         );
     }
 }
