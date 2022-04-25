@@ -35,17 +35,15 @@ pub fn divide(a: i32, b: i32) -> Result<i32, DivisionError> {
 }
 
 // Complete the function and return a value of the correct type so the test passes.
-// Desired output: Ok([1, 11, 1426, 3])
-fn result_with_list() -> Result<Vec<i32>, DivisionError> {
-    let numbers = vec![27, 297, 38502, 81];
-    numbers.into_iter().map(|n| divide(n, 27)).collect()
+// Desired output is e.g.: Ok([1, 11, 1426, 3])
+fn result_with_list(numbers: &Vec<i32>) -> Result<Vec<i32>, DivisionError> {
+    numbers.into_iter().map(|&n| divide(n, 27)).collect()
 }
 
 // Complete the function and return a value of the correct type so the test passes.
-// Desired output: [Ok(1), Ok(11), Ok(1426), Ok(3)]
-fn list_of_results() -> Vec<Result<i32, DivisionError>> {
-    let numbers = vec![27, 297, 38502, 81];
-    numbers.into_iter().map(|n| divide(n, 27)).collect()
+// Desired output is e.g.: [Ok(1), Ok(11), Ok(1426), Ok(3)]
+fn list_of_results(numbers: &Vec<i32>) -> Vec<Result<i32, DivisionError>> {
+    numbers.into_iter().map(|&n| divide(n, 27)).collect()
 }
 
 #[cfg(test)]
@@ -80,14 +78,35 @@ mod tests {
 
     #[test]
     fn test_result_with_list() {
-        assert_eq!(format!("{:?}", result_with_list()), "Ok([1, 11, 1426, 3])");
+        let numbers = vec![27, 297, 38502, 81];
+        assert_eq!(format!("{:?}", result_with_list(&numbers)), "Ok([1, 11, 1426, 3])");
     }
 
     #[test]
     fn test_list_of_results() {
+        let numbers = vec![27, 297, 38502, 81];
         assert_eq!(
-            format!("{:?}", list_of_results()),
+            format!("{:?}", list_of_results(&numbers)),
             "[Ok(1), Ok(11), Ok(1426), Ok(3)]"
+        );
+    }
+
+    // extra tests
+    #[test]
+    fn test_result_with_list_with_error() {
+        let numbers = vec![27, 297, 666, 81];
+        assert_eq!(
+            format!("{:?}", list_of_results(&numbers)),
+            "[Ok(1), Ok(11), Err(NotDivisible(NotDivisibleError { dividend: 666, divisor: 27 })), Ok(3)]"
+        );
+    }
+
+    #[test]
+    fn test_list_of_results_with_error() {
+        let numbers = vec![9, 297, 38502, 81];
+        assert_eq!(
+            format!("{:?}", list_of_results(&numbers)),
+            "[Err(NotDivisible(NotDivisibleError { dividend: 9, divisor: 27 })), Ok(11), Ok(1426), Ok(3)]"
         );
     }
 }
