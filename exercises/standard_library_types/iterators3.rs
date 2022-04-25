@@ -20,7 +20,7 @@ pub fn divide(a: i32, b: i32) -> Result<i32, DivisionError> {
     }
 
     match a % b {
-        x if x > 0 => Err(DivisionError::NotDivisible{
+        x if x > 0 => Err(DivisionError::NotDivisible {
             dividend: a,
             divisor: b,
         }),
